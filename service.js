@@ -10,7 +10,7 @@ var location = "eastus";
 
 axios({
     baseURL: endpoint,
-    url: '/translate',
+    url: '/detect',
     method: 'post',
     headers: {
         'Ocp-Apim-Subscription-Key': subscriptionKey,
