@@ -8,9 +8,10 @@ var endpoint = "https://api.cognitive.microsofttranslator.com/";
 // This is required if using a Cognitive Services resource.
 var location = "eastus";
 
+
 axios({
     baseURL: endpoint,
-    url: '/detect',
+    url: '/dictionary/lookup',
     method: 'post',
     headers: {
         'Ocp-Apim-Subscription-Key': subscriptionKey,
@@ -21,12 +22,14 @@ axios({
     params: {
         'api-version': '3.0',
         'from': 'en',
-        'to': ['de', 'it']
+        'to': 'es'
     },
     data: [{
-        'text': 'Hello World!'
+        'text': 'shark'
     }],
     responseType: 'json'
 }).then(function(response){
-    console.log(JSON.stringify(response.data, null, 4));
+    console.log(JSON.stringify(response.data[0], null, 4));
+}).catch((err) => {
+    console.log(err);
 })
