@@ -120,7 +120,6 @@ app.post(
             response.data[0].detectedLanguage.score;
           translate[0].translations = response.data[i].translations;
         }
-        console.log(response.data[0]);
         res.status(200).json(translate, null, 4);
       })
       .catch((err) => {
@@ -210,7 +209,6 @@ app.post(
       responseType: "json",
     })
       .then(function (response) {
-        console.log(response.data.alternatives);
         for (var i = 0; i < response.data.length; i++) {
           detect[i].language = response.data[i].language;
           detect[i].score = response.data[i].score;
