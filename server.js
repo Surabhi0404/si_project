@@ -31,6 +31,53 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use(cors());
 const { check, validationResult, body } = require("express-validator");
 
+// Get the list of supported languages for scope = translation or transliteration or dictionary
+
+/**
+ * @swagger
+ * /api/language_code/{scope}:
+ *    get:
+ *      description: Return language codes for scope = translation or transliteration or dictionary
+ *      parameters:
+ *          - in: path
+ *            name: scope
+ *            schema:
+ *              type: string
+ *            required: true
+ *            description: Scope for language codes and scripts
+ *      produces: 
+ *          - application/json
+ *      responses:
+ *          200:
+ *              description: Language scope obtained
+ *          400: 
+ *              description: Request failed with status code 400
+ */
+app.get("/api/language_code/:scope", async (req, res) => {
+  axios({
+    baseURL: config.get("translator.endpoint"),
+    url: "/languages",
+    method: "get",
+    headers: {
+      "Ocp-Apim-Subscription-Key": config.get("translator.subscriptionKey"),
+      "Ocp-Apim-Subscription-Region": config.get("translator.location"),
+      "Content-type": "application/json",
+      "X-ClientTraceId": uuidv4().toString(),
+    },
+    params: {
+      "api-version": "3.0",
+      "scope": req.params.scope
+    },
+    responseType: "json",
+  }).then(function (response) {
+    res.status(200).json(response.data, null, 4);
+  }).catch((err) => {
+    if(!req.params.scope)
+      res.status(400).json(err.message+": Missing request parameter 'scope'")
+    res.status(400).json(err.message);
+  });
+});
+
 // Text Translation and detection of language code for input text with Profanity Marking
 
 /**
@@ -526,6 +573,7 @@ app.post("/api/alt_translations", jsonParser,
       res.status(400).json(err.message);
     });
 });
+
 
 app.listen(port, () => {
   console.log(`API deployed on ${port}`);
